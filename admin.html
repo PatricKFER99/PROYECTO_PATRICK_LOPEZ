@@ -30,9 +30,13 @@
                 <input type="number" step="0.01" id="prod-precio" required style="width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
                 
                 <label style="font-weight: bold; color: var(--gris-texto);">Categoría (1=Cafés, 2=Postres, 3=Jugos):</label>
-                <input type="number" id="prod-cat" required min="1" max="3" style="width: 100%; margin-bottom: 25px; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                <input type="number" id="prod-cat" required min="1" max="3" style="width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
                 
-                <button type="submit" class="btn-primary" style="border-radius: 8px;">Guardar en Inventario</button>
+                <label style="font-weight: bold; color: var(--gris-texto);">Sube una imagen:</label>
+                <input type="file" id="prod-img" accept="image/*" style="width: 100%; margin-bottom: 5px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: #fff;">
+                <p id="msg-img" style="font-size: 0.8rem; color: #1e7a4b; margin-top: 0; margin-bottom: 25px; display: none; font-weight: bold;">(✓) Imagen actual guardada. Sube otra solo si quieres cambiarla.</p>
+                
+                <button type="submit" id="btn-guardar" class="btn-primary" style="border-radius: 8px;">Guardar en Inventario</button>
                 <button type="button" onclick="limpiarFormulario()" style="width: 100%; background: #ccc; border: none; padding: 12px; border-radius: 8px; margin-top: 10px; cursor: pointer; font-weight: bold;">Cancelar / Limpiar</button>
             </form>
         </div>
@@ -44,9 +48,9 @@
                 <thead>
                     <tr style="background-color: var(--verde-sirena); color: white;">
                         <th style="padding: 12px; text-align: left;">ID</th>
+                        <th style="padding: 12px; text-align: center;">Imagen</th>
                         <th style="padding: 12px; text-align: left;">Producto</th>
                         <th style="padding: 12px; text-align: left;">Precio</th>
-                        <th style="padding: 12px; text-align: left;">Cat.</th>
                         <th style="padding: 12px; text-align: center;">Acciones</th>
                     </tr>
                 </thead>
@@ -57,7 +61,6 @@
         </div>
     </div>
 
-    <!-- Script de conexión directa a Supabase -->
     <script type="module">
         import { supabase } from './conexion.js';
 
@@ -74,14 +77,16 @@
             tbody.innerHTML = '';
             data.forEach(prod => {
                 const id = prod.id_producto || prod.id;
+                const img = prod.imagen || 'americano-alto-cafe1.jpg'; // Miniatura por defecto
+                
                 tbody.innerHTML += `
                     <tr style="border-bottom: 1px solid #eee;">
                         <td style="padding: 12px; color: var(--gris-texto);">${id}</td>
+                        <td style="padding: 12px; text-align: center;"><img src="${img}" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;"></td>
                         <td style="padding: 12px; font-weight: bold;">${prod.nombre}</td>
                         <td style="padding: 12px;">S/ ${prod.precio.toFixed(2)}</td>
-                        <td style="padding: 12px;">${prod.id_catalogo}</td>
                         <td style="padding: 12px; text-align: center;">
-                            <button onclick="editarProd('${id}', '${prod.nombre}', '${prod.descripcion}', ${prod.precio}, ${prod.id_catalogo})" style="background: #f0ad4e; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Editar</button>
+                            <button onclick="editarProd('${id}', '${prod.nombre}', '${prod.descripcion}', ${prod.precio}, ${prod.id_catalogo}, '${prod.imagen || ''}')" style="background: #f0ad4e; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Editar</button>
                             <button onclick="eliminarProd('${id}')" style="background: #d9534f; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer;">Borrar</button>
                         </td>
                     </tr>
@@ -89,51 +94,92 @@
             });
         }
 
-        // 2. CREAR / ACTUALIZAR: Guardar producto
+        // 2. CREAR / ACTUALIZAR: Subir foto y guardar producto
         document.getElementById('form-producto').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const id = document.getElementById('prod-id').value;
-            const producto = {
-                nombre: document.getElementById('prod-nombre').value,
-                descripcion: document.getElementById('prod-desc').value,
-                precio: parseFloat(document.getElementById('prod-precio').value),
-                id_catalogo: parseInt(document.getElementById('prod-cat').value)
-            };
-
-            if (id) {
-                await supabase.from('t_producto').update(producto).eq('id_producto', id);
-                alert("✅ Producto actualizado en el inventario.");
-            } else {
-                await supabase.from('t_producto').insert([producto]);
-                alert("✅ Nuevo producto agregado al inventario.");
-            }
             
-            limpiarFormulario();
-            cargarInventario();
-            sessionStorage.removeItem('catalogoStarbucksV5'); // Forzar actualización en la tienda
+            const btnGuardar = document.getElementById('btn-guardar');
+            btnGuardar.innerText = "Subiendo imagen y guardando...";
+            btnGuardar.disabled = true;
+
+            const id = document.getElementById('prod-id').value;
+            const inputArchivo = document.getElementById('prod-img');
+            const archivo = inputArchivo.files[0];
+            
+            // Mantener la URL anterior si estamos editando y no subimos una foto nueva
+            let urlFinal = inputArchivo.dataset.urlAnterior || '';
+
+            try {
+                // Si el usuario seleccionó una imagen nueva, la subimos al Bucket
+                if (archivo) {
+                    const nombreUnico = Date.now() + "_" + archivo.name.replace(/\s+/g, '-');
+                    const { data: uploadData, error: uploadError } = await supabase.storage.from('fotos').upload(nombreUnico, archivo);
+                    
+                    if (uploadError) throw uploadError;
+                    
+                    // Extraemos el enlace web permanente de esa foto
+                    const { data: publicUrlData } = supabase.storage.from('fotos').getPublicUrl(nombreUnico);
+                    urlFinal = publicUrlData.publicUrl;
+                }
+
+                const producto = {
+                    nombre: document.getElementById('prod-nombre').value,
+                    descripcion: document.getElementById('prod-desc').value,
+                    precio: parseFloat(document.getElementById('prod-precio').value),
+                    id_catalogo: parseInt(document.getElementById('prod-cat').value),
+                    imagen: urlFinal
+                };
+
+                if (id) {
+                    await supabase.from('t_producto').update(producto).eq('id_producto', id);
+                    alert("✅ Producto actualizado exitosamente.");
+                } else {
+                    await supabase.from('t_producto').insert([producto]);
+                    alert("✅ Nuevo producto creado exitosamente.");
+                }
+                
+                limpiarFormulario();
+                cargarInventario();
+                sessionStorage.removeItem('catalogoStarbucksV5'); 
+                
+            } catch (err) {
+                console.error(err);
+                alert("Hubo un error: " + err.message);
+            } finally {
+                btnGuardar.innerText = "Guardar en Inventario";
+                btnGuardar.disabled = false;
+            }
         });
 
-        // 3. BORRAR: Eliminar producto
+        // 3. BORRAR
         window.eliminarProd = async (id) => {
             if(confirm("¿Estás seguro de que deseas eliminar este producto del inventario?")) {
                 await supabase.from('t_producto').delete().eq('id_producto', id);
                 cargarInventario();
-                sessionStorage.removeItem('catalogoStarbucksV5'); // Forzar actualización en la tienda
+                sessionStorage.removeItem('catalogoStarbucksV5'); 
             }
         }
 
         // 4. Llenar formulario para editar
-        window.editarProd = (id, nombre, desc, precio, cat) => {
+        window.editarProd = (id, nombre, desc, precio, cat, urlImg) => {
             document.getElementById('prod-id').value = id;
             document.getElementById('prod-nombre').value = nombre;
             document.getElementById('prod-desc').value = desc;
             document.getElementById('prod-precio').value = precio;
             document.getElementById('prod-cat').value = cat;
+            
+            const inputImg = document.getElementById('prod-img');
+            inputImg.value = ''; // Limpiamos el selector
+            inputImg.dataset.urlAnterior = urlImg; // Guardamos en memoria la imagen que ya tenía
+            
+            document.getElementById('msg-img').style.display = urlImg ? 'block' : 'none';
         }
 
         window.limpiarFormulario = () => {
             document.getElementById('form-producto').reset();
             document.getElementById('prod-id').value = '';
+            document.getElementById('prod-img').dataset.urlAnterior = '';
+            document.getElementById('msg-img').style.display = 'none';
         }
 
         cargarInventario();

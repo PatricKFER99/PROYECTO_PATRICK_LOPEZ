@@ -4,13 +4,12 @@
 import { supabase } from './conexion.js';
 
 // ==========================================
-// FUNCIÓN 1: CARGAR EL CATÁLOGO (EXCLUSIVO 15 PRODUCTOS)
+// FUNCIÓN 1: CARGAR EL CATÁLOGO (DINÁMICO CON IMÁGENES)
 // ==========================================
 async function cargarCatalogo() {
     const contenedor = document.getElementById('catalogo-container');
     if (!contenedor) return; 
 
-    // Llave de caché renovada para evitar datos antiguos
     const catalogoGuardado = sessionStorage.getItem('catalogoStarbucksV5');
     if (catalogoGuardado) {
         renderizarTarjetas(JSON.parse(catalogoGuardado), contenedor);
@@ -26,7 +25,6 @@ async function cargarCatalogo() {
             </div>
         `;
 
-        // Traemos solo los 15 productos ordenados estrictamente por categoría
         const { data: productos, error } = await supabase
             .from('t_producto')
             .select('*')
@@ -50,47 +48,10 @@ function renderizarTarjetas(productos, contenedor) {
         contenedor.innerHTML = '<p style="color: var(--cafe-oscuro); text-align: center; width: 100%;">No hay productos disponibles.</p>';
         return;
     }
-    
-    let idxCafe = 1;
-    let idxPostre = 1;
-    let idxJugo = 1;
 
     productos.forEach(prod => {
-        let imgUrl = 'americano-alto-cafe1.jpg'; 
-        const cat = prod.id_catalogo; 
-
-        if (cat === 1) {
-            const mapCafes = {
-                1: 'americano-alto-cafe1.jpg',
-                2: 'latte-alto-cafe2.jpg',
-                3: 'latte-macchiato-alto-cafe3.jpg',
-                4: 'black-white-mocha-alto-cafe4.jpg',
-                5: 'caramel-macchiato-alto-cafe5.jpg'
-            };
-            imgUrl = mapCafes[idxCafe] || 'americano-alto-cafe1.jpg';
-            idxCafe++;
-        } else if (cat === 2) {
-            const mapPostres = {
-                1: 'galleta-rellena-de-crema-de-avellanas-postre1.jpg',
-                2: 'torta-de-chocolate-postre2.jpg',
-                3: 'sandwich-pavita-queso-espinaca-postre3.jpg',
-                4: 'cuchareable-chocolucuma-con-brownie-postre4.jpg',
-                5: 'cuchareable-de-tres-leches-postre5.jpg'
-            };
-            imgUrl = mapPostres[idxPostre] || 'torta-de-chocolate-postre2.jpg';
-            idxPostre++;
-        } else if (cat === 3) {
-            const mapJugos = {
-                1: 'iced-protein-matcha-jugo1.jpg',
-                2: 'iced-sugar-free-vanilla-protein-latte-jugo2.jpg',
-                3: 'sugar-free-vanilla-protein-latte-jugo3.jpg',
-                4: 'pink-drink-refresher-alto-jugo4.jpg',
-                5: 'protein-matcha-jugo5.jpg'
-            };
-            imgUrl = mapJugos[idxJugo] || 'pink-drink-refresher-alto-jugo4.jpg';
-            idxJugo++;
-        }
-        
+        // Lee la imagen de Supabase, o usa una por defecto si el campo está vacío
+        const imgUrl = prod.imagen || 'americano-alto-cafe1.jpg'; 
         const idDelProducto = prod.id_producto || prod.id;
 
         const tarjetaHTML = `
@@ -412,6 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formLogin = document.getElementById('form-login');
     if(formLogin) formLogin.addEventListener('submit', iniciarSesion);
 });
+
 // ==========================================
 // FUNCIÓN DE CONTACTO Y SOPORTE
 // ==========================================
