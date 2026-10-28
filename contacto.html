@@ -2,19 +2,19 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Starbucks Perú | Contacto y Soporte</title>
+    <title>Sonqo Café | Catálogo</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body style="margin: 0; font-family: 'Open Sans', sans-serif; background-color: var(--crema, #f9f6f0); display: flex; flex-direction: column; min-height: 100vh;">
+<body style="margin: 0; font-family: 'Open Sans', sans-serif; background-color: var(--crema, #f9f5f0); display: flex; flex-direction: column; min-height: 100vh;">
 
     <!-- BARRA DE NAVEGACIÓN MULTIPÁGINA UNIFICADA -->
     <!-- HEADER UNIFICADO MAESTRO -->
-    <header class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: var(--verde-sirena, #006241); position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); box-sizing: border-box;">
+    <header class="navbar" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: var(--marron-sonqo, #5c3a21); position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); box-sizing: border-box;">
         
         <!-- LOGO -->
         <div class="logo-container" style="display: flex; align-items: center;">
-            <img src="logo.png" alt="Starbucks Logo" class="logo" style="height: 45px;">
+            <img src="logo.png" alt="Sonqo Café Logo" class="logo" style="height: 45px;">
         </div>
 
         <!-- NAVEGACIÓN CENTRAL -->
@@ -31,56 +31,73 @@
         <div id="menu-usuario" style="display: flex; align-items: center; gap: 15px;">
             <!-- Estado por defecto (Si no ha iniciado sesión): Muestra Registrarse e Iniciar Sesión -->
             <button onclick="document.getElementById('modal-registro').style.display='flex'" style="background: transparent; border: 1px solid white; color: white; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: 0.3s;">Registrarse</button>
-            <button onclick="document.getElementById('modal-login').style.display='flex'" style="background: white; border: none; color: var(--verde-sirena, #006241); padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: 0.3s;">Iniciar Sesión</button>
+            <button onclick="document.getElementById('modal-login').style.display='flex'" style="background: white; border: none; color: var(--marron-sonqo, #5c3a21); padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: 0.3s;">Iniciar Sesión</button>
         </div>
     </header>
 
-    <!-- CUERPO PRINCIPAL DE CONTACTO -->
-    <main style="padding-top: 140px; flex-grow: 1; padding-bottom: 60px; display: flex; flex-direction: column; align-items: center;">
-        <h1 class="section-title" style="text-align: center; color: var(--verde-sirena, #006241); font-family: 'Montserrat', sans-serif; font-size: 2.5rem; margin-bottom: 20px;">Centro de Atención al Cliente</h1>
-        <p style="color: #666; text-align: center; margin-bottom: 40px; font-size: 1.1rem;">¿Tienes dudas con tu pedido o requieres asistencia personalizada? Estamos para ayudarte.</p>
-
-        <!-- CONTENEDOR DE DOS COLUMNAS (Formulario + Botón Directo Admin) -->
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; width: 90%; max-width: 1000px;">
-            
-            <!-- TARJETA 1: FORMULARIO DE MENSAJES -->
-            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); flex: 1; min-width: 300px; box-sizing: border-box;">
-                <h3 style="color: var(--verde-sirena, #006241); margin-top: 0; font-family: 'Montserrat', sans-serif; margin-bottom: 20px;">Envíanos un mensaje</h3>
-                <form id="form-contacto" onsubmit="enviarContacto(event)">
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #444;">Tu Nombre:</label>
-        <input type="text" id="contacto-nombre" placeholder="Ej. Carlos Ruiz" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-    </div>
-    <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #444;">Correo Electrónico:</label>
-        <input type="email" id="contacto-correo" placeholder="correo@ejemplo.com" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-    </div>
-    <div style="margin-bottom: 20px;">
-        <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #444;">Mensaje:</label>
-        <textarea id="contacto-mensaje" rows="4" placeholder="Escribe tu consulta aquí..." required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; resize: none;"></textarea>
-    </div>
-    <button type="submit" class="btn-primary" style="width: 100%; background: var(--verde-sirena, #006241); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s;">Enviar Mensaje</button>
-</form>
+    <!-- CUERPO PRINCIPAL DEL CATÁLOGO -->
+    <main style="padding-top: 140px; flex-grow: 1; padding-bottom: 60px;">
+        <h1 class="section-title" style="text-align: center; color: var(--marron-sonqo, #5c3a21); font-family: 'Montserrat', sans-serif; font-size: 2.5rem; margin-bottom: 40px;">Nuestro Menú Completo</h1>
+        
+        <!-- CONTENEDOR INTELIGENTE: Aquí el app.js inyectará automáticamente los productos desde Supabase -->
+        <div id="catalogo-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; padding: 0 5%; max-width: 1300px; margin: 0 auto;">
+            <!-- Indicador de carga inicial por defecto -->
+            <div style="text-align: center; width: 100%; padding: 40px;">
+                <p style="color: #777; font-weight: bold;">Cargando productos desde Supabase...</p>
             </div>
-
-            <!-- TARJETA 2: ACCESO DIRECTO CON EL ADMINISTRADOR -->
-            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); flex: 1; min-width: 300px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                <div style="font-size: 3rem; margin-bottom: 15px;">💬</div>
-                <h3 style="color: var(--verde-sirena, #006241); margin-top: 0; font-family: 'Montserrat', sans-serif; margin-bottom: 10px;">¿Necesitas ayuda inmediata?</h3>
-                <p style="color: #666; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">Comunícate en tiempo real de forma directa con la administración general de nuestro sistema para resolver cualquier inconveniente urgente.</p>
-                
-                <!-- BOTÓN DIRECTO WHATSAPP ADMINISTRADOR -->
-                <a href="https://wa.me/51949187927?text=Hola,%20necesito%20soporte%20directo%20con%20el%20administrador%20de%20Starbucks" target="_blank" style="display: inline-block; background-color: #25d366; color: white; text-decoration: none; padding: 15px 25px; border-radius: 30px; font-weight: bold; font-family: 'Montserrat', sans-serif; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); transition: 0.3s; width: 100%; box-sizing: border-box;">
-                    📲 Contactar con Administrador
-                </a>
-            </div>
-
         </div>
     </main>
 
+    <!-- ========================================== -->
+    <!-- MODALES Y PANEL LATERAL DEL CARRITO        -->
+    <!-- ========================================== -->
+    
+    <!-- OVERLAY OSCURO -->
+    <div id="overlay-carrito" onclick="cerrarCarrito()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 998;"></div>
+    
+    <!-- PANEL LATERAL DE COMPRA -->
+    <div id="panel-carrito" style="display: none; position: fixed; top: 0; right: -400px; width: 350px; height: 100%; background: white; z-index: 999; box-shadow: -5px 0 15px rgba(0,0,0,0.2); transition: right 0.3s ease; flex-direction: column; padding: 20px; box-sizing: border-box;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--marron-sonqo, #5c3a21); padding-bottom: 10px; margin-bottom: 20px;">
+            <h2 style="color: var(--marron-sonqo, #5c3a21); margin: 0; font-family: 'Montserrat', sans-serif;">Tu Pedido</h2>
+            <button onclick="cerrarCarrito()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: #555;">&times;</button>
+        </div>
+        <div id="items-carrito" style="flex-grow: 1; overflow-y: auto;"></div>
+        <div style="border-top: 2px solid #eee; padding-top: 20px; margin-top: 10px;">
+            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: #333;">
+                <span>Total:</span>
+                <span id="total-carrito">S/ 0.00</span>
+            </div>
+            <button onclick="procesarCompra()" style="width: 100%; background: var(--marron-sonqo, #5c3a21); color: white; border: none; padding: 15px; border-radius: 25px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s;">Procesar Pago</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE PAGO Y SELECCIÓN DE DISTRITO / ENVÍO -->
+    <div id="modal-pago" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 450px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); box-sizing: border-box;">
+            <h2 style="color: var(--marron-sonqo, #5c3a21); margin-top: 0; margin-bottom: 20px; text-align: center; font-family: 'Montserrat', sans-serif;">Completa tu Envío y Pago</h2>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #444;">Selecciona tu Distrito:</label>
+                <select id="select-distrito" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+                    <option value="">Cargando distritos...</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #444;">Dirección Exacta:</label>
+                <input type="text" id="input-direccion" placeholder="Ej. Av. Los Alcanfores 1285" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+            </div>
+            <p style="font-weight: bold; margin-bottom: 15px; text-align: center; color: #444;">Elige tu método de pago:</p>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <button onclick="finalizarPedido('Yape')" style="background: #7415b9; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Pagar con Yape / Plin</button>
+                <button onclick="finalizarPedido('Tarjeta')" style="background: var(--marron-sonqo, #5c3a21); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Tarjeta de Crédito / Débito</button>
+                <button onclick="finalizarPedido('Efectivo')" style="background: #555; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">Efectivo contra entrega</button>
+            </div>
+            <button onclick="document.getElementById('modal-pago').style.display='none'" style="width: 100%; background: #ccc; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; color: #333;">Cancelar</button>
+        </div>
+    </div>
+
     <!-- PIE DE PÁGINA OFICIAL -->
     <footer style="background-color: var(--cafe-oscuro, #2c1d11); color: white; text-align: center; padding: 25px; margin-top: auto;">
-        <p style="margin: 0; font-size: 0.95rem;">&copy; &copy; 2026 [Patrick Lopez Meza]. Sistema de Inventario y Ventas</p>
+        <p style="margin: 0; font-size: 0.95rem;">&copy; 2026 Patrick Lopez Meza. Sistema de Inventario y Ventas</p>
     </footer>
 
     <!-- MOTOR CENTRAL JAVASCRIPT (MODULAR) -->

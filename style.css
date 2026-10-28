@@ -2,11 +2,11 @@
    1. ELEMENTOS BÁSICOS Y TÉCNICA (Teoría del color y Tipografía)
    ========================================================================== */
 :root {
-    /* Paleta de Colores Oficial */
-    --verde-sirena: #006241;
-    --verde-menta: #d4e9e2;
+    /* Paleta de Colores Oficial Sonqo Cafe */
+    --marron-sonqo: #5c3a21; /* Reemplaza al verde-sirena */
+    --verde-menta: #d4e9e2; /* Mantenido para acentos suaves si se requiere */
     --cafe-oscuro: #2c1d11;
-    --crema: #f9f6f0;
+    --crema: #f9f5f0;
     --blanco: #ffffff;
     --gris-texto: #555555;
     
@@ -37,7 +37,7 @@ body {
    ========================================================================== */
 h1, h2, h3, h4 {
     font-family: var(--fuente-titulos);
-    color: var(--verde-sirena);
+    color: var(--marron-sonqo);
 }
 
 /* Barra de navegación (Equilibrio y Alineación) */
@@ -46,7 +46,7 @@ h1, h2, h3, h4 {
     justify-content: space-between;
     align-items: center;
     padding: 15px 5%;
-    background-color: var(--verde-sirena);
+    background-color: var(--marron-sonqo);
     position: fixed;
     top: 0;
     width: 100%;
@@ -70,7 +70,7 @@ h1, h2, h3, h4 {
 }
 
 .nav-links a:hover {
-    color: var(--verde-menta);
+    color: var(--crema);
 }
 
 /* ==========================================================================
@@ -121,7 +121,7 @@ h1, h2, h3, h4 {
    4. PERSUASIÓN Y FUNCIONALIDAD (Llamados a la Acción)
    ========================================================================== */
 .btn-primary {
-    background-color: var(--verde-sirena);
+    background-color: var(--marron-sonqo);
     color: var(--blanco);
     border: none;
     padding: 12px 25px;
@@ -134,7 +134,7 @@ h1, h2, h3, h4 {
 }
 
 .btn-primary:hover {
-    background-color: #004d33;
+    background-color: var(--cafe-oscuro);
     transform: scale(1.02);
 }
 
@@ -146,8 +146,8 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: var(--verde-sirena) !important;
-    box-shadow: 0 0 5px rgba(0, 98, 65, 0.3);
+    border-color: var(--marron-sonqo) !important;
+    box-shadow: 0 0 5px rgba(92, 58, 33, 0.3);
 }
 
 /* ==========================================================================
@@ -201,7 +201,7 @@ input:focus, select:focus, textarea:focus {
 .hero-content h1 {
     font-size: 4rem;
     margin-bottom: 20px;
-    color: var(--verde-menta);
+    color: var(--crema);
     line-height: 1.1;
 }
 
@@ -227,7 +227,7 @@ input:focus, select:focus, textarea:focus {
 
 .btn-secondary:hover {
     background-color: var(--blanco);
-    color: var(--cafe-oscuro);
+    color: var(--marron-sonqo);
 }
 
 /* Ajuste para celulares */

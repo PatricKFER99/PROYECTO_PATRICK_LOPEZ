@@ -2,51 +2,51 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Administración | Inventario</title>
+    <title>Panel de Administración | Sonqo Café</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body style="background-color: var(--crema); font-family: 'Open Sans', sans-serif; padding: 40px;">
+<body style="background-color: var(--crema, #f9f5f0); font-family: 'Open Sans', sans-serif; padding: 40px;">
     
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-        <h1 style="color: var(--verde-sirena); font-family: 'Montserrat', sans-serif;">Gestión de Inventario (Administrador)</h1>
-        <a href="index.html" class="btn-primary" style="text-decoration: none; width: auto;">Volver a la tienda</a>
+        <h1 style="color: var(--marron-sonqo, #5c3a21); font-family: 'Montserrat', sans-serif;">Gestión de Inventario (Administrador)</h1>
+        <a href="index.html" class="btn-primary" style="text-decoration: none; width: auto; background-color: var(--marron-sonqo, #5c3a21); color: white; padding: 12px 25px; border-radius: 25px; font-weight: bold; font-family: 'Montserrat', sans-serif;">Volver a la tienda</a>
     </div>
     
     <div style="display: flex; gap: 30px; flex-wrap: wrap;">
         <!-- Formulario CRUD -->
         <div style="flex: 1; min-width: 300px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-            <h3 style="color: var(--cafe-oscuro); margin-bottom: 20px;">Agregar / Editar Producto</h3>
+            <h3 style="color: var(--cafe-oscuro, #2c1d11); margin-bottom: 20px;">Agregar / Editar Producto</h3>
             <form id="form-producto">
                 <input type="hidden" id="prod-id">
                 
-                <label style="font-weight: bold; color: var(--gris-texto);">Nombre del producto:</label>
+                <label style="font-weight: bold; color: var(--gris-texto, #555);">Nombre del producto:</label>
                 <input type="text" id="prod-nombre" required style="width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
                 
-                <label style="font-weight: bold; color: var(--gris-texto);">Descripción:</label>
+                <label style="font-weight: bold; color: var(--gris-texto, #555);">Descripción:</label>
                 <textarea id="prod-desc" required rows="3" style="width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; resize: none;"></textarea>
                 
-                <label style="font-weight: bold; color: var(--gris-texto);">Precio (S/):</label>
+                <label style="font-weight: bold; color: var(--gris-texto, #555);">Precio (S/):</label>
                 <input type="number" step="0.01" id="prod-precio" required style="width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
                 
-                <label style="font-weight: bold; color: var(--gris-texto);">Categoría (1=Cafés, 2=Postres, 3=Jugos, 4=Promos):</label>
-<input type="number" id="prod-cat" required min="1" max="4" style="width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                <label style="font-weight: bold; color: var(--gris-texto, #555);">Categoría (1=Cafés, 2=Postres, 3=Jugos, 4=Promos):</label>
+                <input type="number" id="prod-cat" required min="1" max="4" style="width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
                 
-                <label style="font-weight: bold; color: var(--gris-texto);">Sube una imagen:</label>
+                <label style="font-weight: bold; color: var(--gris-texto, #555);">Sube una imagen:</label>
                 <input type="file" id="prod-img" accept="image/*" style="width: 100%; margin-bottom: 5px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: #fff;">
                 <p id="msg-img" style="font-size: 0.8rem; color: #1e7a4b; margin-top: 0; margin-bottom: 25px; display: none; font-weight: bold;">(✓) Imagen actual guardada. Sube otra solo si quieres cambiarla.</p>
                 
-                <button type="submit" id="btn-guardar" class="btn-primary" style="border-radius: 8px;">Guardar en Inventario</button>
-                <button type="button" onclick="limpiarFormulario()" style="width: 100%; background: #ccc; border: none; padding: 12px; border-radius: 8px; margin-top: 10px; cursor: pointer; font-weight: bold;">Cancelar / Limpiar</button>
+                <button type="submit" id="btn-guardar" class="btn-primary" style="background-color: var(--marron-sonqo, #5c3a21); border-radius: 8px;">Guardar en Inventario</button>
+                <button type="button" onclick="limpiarFormulario()" style="width: 100%; background: #ccc; color: #333; border: none; padding: 12px; border-radius: 8px; margin-top: 10px; cursor: pointer; font-weight: bold;">Cancelar / Limpiar</button>
             </form>
         </div>
 
         <!-- Tabla de Inventario -->
         <div style="flex: 2; min-width: 500px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow-x: auto;">
-            <h3 style="color: var(--cafe-oscuro); margin-bottom: 20px;">Stock Actual</h3>
+            <h3 style="color: var(--cafe-oscuro, #2c1d11); margin-bottom: 20px;">Stock Actual</h3>
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
-                    <tr style="background-color: var(--verde-sirena); color: white;">
+                    <tr style="background-color: var(--marron-sonqo, #5c3a21); color: white;">
                         <th style="padding: 12px; text-align: left;">ID</th>
                         <th style="padding: 12px; text-align: center;">Imagen</th>
                         <th style="padding: 12px; text-align: left;">Producto</th>
@@ -81,7 +81,7 @@
                 
                 tbody.innerHTML += `
                     <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 12px; color: var(--gris-texto);">${id}</td>
+                        <td style="padding: 12px; color: var(--gris-texto, #555);">${id}</td>
                         <td style="padding: 12px; text-align: center;"><img src="${img}" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;"></td>
                         <td style="padding: 12px; font-weight: bold;">${prod.nombre}</td>
                         <td style="padding: 12px;">S/ ${prod.precio.toFixed(2)}</td>
