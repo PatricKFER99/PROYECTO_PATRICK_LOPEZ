@@ -19,7 +19,7 @@ async function cargarCatalogo() {
     try {
         contenedor.innerHTML = `
             <div style="text-align: center; width: 100%; padding: 40px;">
-                <div style="border: 4px solid rgba(0,0,0,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--verde-sirena); animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                <div style="border: 4px solid rgba(0,0,0,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--marron-sonqo, #5c3a21); animation: spin 1s linear infinite; margin: 0 auto;"></div>
                 <p style="color: #777; margin-top: 15px; font-weight: bold;">Cargando menú completo...</p>
                 <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
             </div>
@@ -42,26 +42,59 @@ async function cargarCatalogo() {
     }
 }
 
+// ==========================================
+// FUNCIÓN 1.5: CARGAR PROMOCIONES (CATEGORÍA 4)
+// ==========================================
+async function cargarPromociones() {
+    const contenedor = document.getElementById('promociones-container');
+    if (!contenedor) return; 
+
+    try {
+        contenedor.innerHTML = `
+            <div style="text-align: center; width: 100%; padding: 40px;">
+                <div style="border: 4px solid rgba(0,0,0,0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--marron-sonqo, #5c3a21); animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                <p style="color: #777; margin-top: 15px; font-weight: bold;">Cargando promociones exclusivas...</p>
+            </div>
+        `;
+
+        const { data: promociones, error } = await supabase
+            .from('t_producto')
+            .select('*')
+            .eq('id_catalogo', 4)
+            .order('id_producto', { ascending: true });
+
+        if (error) throw error;
+        
+        renderizarTarjetas(promociones, contenedor);
+        
+    } catch (error) {
+        console.error("Error al cargar promociones:", error);
+        contenedor.innerHTML = '<p style="color: red; text-align: center; width: 100%;">Error al conectar con la base de datos.</p>';
+    }
+}
+
+// ==========================================
+// RENDERIZADO VISUAL DE TARJETAS
+// ==========================================
 function renderizarTarjetas(productos, contenedor) {
     contenedor.innerHTML = ''; 
     if (productos.length === 0) {
-        contenedor.innerHTML = '<p style="color: var(--cafe-oscuro); text-align: center; width: 100%;">No hay productos disponibles.</p>';
+        contenedor.innerHTML = '<p style="color: #5c3a21; text-align: center; width: 100%;">No hay productos disponibles por el momento.</p>';
         return;
     }
 
     productos.forEach(prod => {
-        // Lee la imagen de Supabase, o usa una por defecto si el campo está vacío
         const imgUrl = prod.imagen || 'americano-alto-cafe1.jpg'; 
         const idDelProducto = prod.id_producto || prod.id;
 
         const tarjetaHTML = `
-            <div class="card" style="width: 30%; min-width: 250px; background-color: var(--blanco); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s; margin-bottom: 20px; display: flex; flex-direction: column;">
+            <div class="card" style="width: 30%; min-width: 250px; background-color: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s; margin-bottom: 20px; display: flex; flex-direction: column;">
                 <img src="${imgUrl}" alt="${prod.nombre}" style="width: 100%; height: 250px; object-fit: cover;">
                 <div class="card-info" style="padding: 20px; text-align: center; display: flex; flex-direction: column; flex-grow: 1;">
-                    <h3 style="color: var(--verde-sirena); margin-bottom: 10px;">${prod.nombre}</h3>
+                    <h3 style="color: var(--marron-sonqo, #5c3a21); margin-bottom: 10px;">${prod.nombre}</h3>
                     <p style="color: #555; margin-bottom: 15px; font-size: 0.9rem; flex-grow: 1;">${prod.descripcion}</p>
-                    <span style="display: block; font-weight: bold; font-size: 1.3rem; color: var(--cafe-oscuro); margin-bottom: 15px;">S/ ${prod.precio.toFixed(2)}</span>
-                    <button onclick="agregarAlCarrito('${idDelProducto}', '${prod.nombre}', ${prod.precio})" class="btn-primary" style="width: 100%; border: none; cursor: pointer; padding: 12px; border-radius: 25px; transition: 0.3s; background: var(--verde-sirena); color: white; font-weight: bold;">Agregar al pedido</button>
+                    <span style="display: block; font-weight: bold; font-size: 1.3rem; color: #333; margin-bottom: 15px;">S/ ${prod.precio.toFixed(2)}</span>
+                    <button onclick="agregarAlCarrito('${idDelProducto}', '${prod.nombre}', ${prod.precio})" class="btn-primary" style="width: 100%; border: none; cursor: pointer; padding: 12px; border-radius: 25px; transition: 0.3s; background: var(--marron-sonqo, #5c3a21); color: white; font-weight: bold;">Agregar al pedido</button>
                 </div>
             </div>
         `;
@@ -112,17 +145,16 @@ function actualizarHeader() {
     if (usuarioGuardado && contenedorUsuario) {
         const primerNombre = usuarioGuardado.nombre.split(' ')[0];
         
-        // Botón exclusivo para tu correo de administrador
         let botonAdmin = '';
         if (usuarioGuardado.correo === '61012190@iestpasm.edu.pe') {
-            botonAdmin = `<button onclick="window.location.href='admin.html'" style="background: #e6b800; color: var(--cafe-oscuro); border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 10px;">⚙️ Panel Admin</button>`;
+            botonAdmin = `<button onclick="window.location.href='admin.html'" style="background: #e6b800; color: #333; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 10px;">⚙️ Panel Admin</button>`;
         }
 
         contenedorUsuario.innerHTML = `
-            <span style="color: var(--blanco); font-weight: bold; margin-right: 15px; font-size: 1.1rem;">Bienvenido, ${primerNombre}</span>
+            <span style="color: white; font-weight: bold; margin-right: 15px; font-size: 1.1rem;">Bienvenido, ${primerNombre}</span>
             ${botonAdmin}
-            <button onclick="abrirCarrito()" style="background: var(--verde-menta); color: var(--verde-sirena); border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 10px;">🛒 Carrito</button>
-            <button onclick="cerrarSesion()" style="background: transparent; border: 1px solid var(--blanco); color: var(--blanco); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold;">Salir</button>
+            <button onclick="abrirCarrito()" style="background: #e3d3c8; color: var(--marron-sonqo, #5c3a21); border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 10px;">🛒 Carrito</button>
+            <button onclick="cerrarSesion()" style="background: transparent; border: 1px solid white; color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold;">Salir</button>
         `;
     }
 }
@@ -195,7 +227,7 @@ window.renderizarCarrito = function() {
             total += item.precio * item.cantidad;
             contenedor.innerHTML += `
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                    <div><h4 style="color: var(--verde-sirena); margin: 0 0 5px 0; font-size: 1.1rem;">${item.nombre}</h4><span style="color: #777; font-size: 0.9rem;">S/ ${item.precio.toFixed(2)} x ${item.cantidad}</span></div>
+                    <div><h4 style="color: var(--marron-sonqo, #5c3a21); margin: 0 0 5px 0; font-size: 1.1rem;">${item.nombre}</h4><span style="color: #777; font-size: 0.9rem;">S/ ${item.precio.toFixed(2)} x ${item.cantidad}</span></div>
                     <div style="display: flex; align-items: center; gap: 15px;"><span style="font-weight: bold; font-size: 1.1rem;">S/ ${(item.precio * item.cantidad).toFixed(2)}</span><button onclick="eliminarDelCarrito(${index})" style="background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold;">X</button></div>
                 </div>
             `;
@@ -361,20 +393,6 @@ window.finalizarPedido = async function(metodoPago) {
 }
 
 // ==========================================
-// INICIALIZACIÓN
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    cargarCatalogo();
-    actualizarHeader(); 
-    
-    const formRegistro = document.getElementById('form-registro');
-    if(formRegistro) formRegistro.addEventListener('submit', registrarCliente);
-
-    const formLogin = document.getElementById('form-login');
-    if(formLogin) formLogin.addEventListener('submit', iniciarSesion);
-});
-
-// ==========================================
 // FUNCIÓN DE CONTACTO Y SOPORTE
 // ==========================================
 window.enviarContacto = async function(event) {
@@ -402,3 +420,18 @@ window.enviarContacto = async function(event) {
         alert('Hubo un error al enviar el mensaje. Inténtalo nuevamente.');
     }
 }
+
+// ==========================================
+// INICIALIZACIÓN (AQUÍ CARGA TODO AL ABRIR LA PÁGINA)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    cargarCatalogo();
+    cargarPromociones(); // <-- Inyecta la categoría 4 en promociones.html
+    actualizarHeader(); 
+    
+    const formRegistro = document.getElementById('form-registro');
+    if(formRegistro) formRegistro.addEventListener('submit', registrarCliente);
+
+    const formLogin = document.getElementById('form-login');
+    if(formLogin) formLogin.addEventListener('submit', iniciarSesion);
+});
