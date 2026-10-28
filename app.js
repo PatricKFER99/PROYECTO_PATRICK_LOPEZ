@@ -150,8 +150,16 @@ function actualizarHeader() {
 
     if (usuarioGuardado && contenedorUsuario) {
         const primerNombre = usuarioGuardado.nombre.split(' ')[0];
+        
+        // Botón exclusivo para tu correo de administrador
+        let botonAdmin = '';
+        if (usuarioGuardado.correo === '61012190@iestpasm.edu.pe') {
+            botonAdmin = `<button onclick="window.location.href='admin.html'" style="background: #e6b800; color: var(--cafe-oscuro); border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 10px;">⚙️ Panel Admin</button>`;
+        }
+
         contenedorUsuario.innerHTML = `
             <span style="color: var(--blanco); font-weight: bold; margin-right: 15px; font-size: 1.1rem;">Bienvenido, ${primerNombre}</span>
+            ${botonAdmin}
             <button onclick="abrirCarrito()" style="background: var(--verde-menta); color: var(--verde-sirena); border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 10px;">🛒 Carrito</button>
             <button onclick="cerrarSesion()" style="background: transparent; border: 1px solid var(--blanco); color: var(--blanco); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold;">Salir</button>
         `;
