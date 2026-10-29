@@ -230,8 +230,74 @@ input:focus, select:focus, textarea:focus {
     color: var(--marron-sonqo);
 }
 
-/* Ajuste para celulares */
+/* ==========================================
+   OPTIMIZACIÓN PARA CELULARES (RESPONSIVE)
+   ========================================== */
 @media (max-width: 768px) {
-    .hero-content h1 { font-size: 2.5rem; }
-    .hero { height: 65vh; }
+    /* 1. Ajustar la barra de navegación para que no se amontone */
+    .navbar {
+        flex-direction: column !important;
+        padding: 15px 10px !important;
+        gap: 15px !important;
+    }
+    .nav-links {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 15px !important;
+    }
+    #menu-usuario {
+        width: 100% !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+    
+    /* 2. Ajustar textos de la portada (Hero) */
+    .hero h1, #web-hero-titulo {
+        font-size: 2rem !important; 
+        text-align: center !important;
+    }
+    .hero p, #web-hero-desc {
+        font-size: 1.1rem !important;
+        text-align: center !important;
+    }
+    
+    /* 3. Forzar que las secciones informativas se apilen verticalmente */
+    section[style*="display: flex"] {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 0 20px !important;
+        margin: 40px auto !important;
+    }
+    
+    /* 4. Ajustar imágenes para que no se salgan de la pantalla */
+    img[id^="web-sec"], img[id^="web-rew"] {
+        height: auto !important;
+        max-height: 250px !important;
+        width: 100% !important;
+    }
+    
+    /* 5. Ajustar las tarjetas del catálogo y promociones */
+    .card {
+        width: 100% !important;
+        min-width: 100% !important;
+        margin-bottom: 20px !important;
+    }
+    
+    /* 6. Ajustar el panel lateral del carrito para que ocupe toda la pantalla */
+    #panel-carrito {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    /* 7. Reducir los márgenes de los modales (Login, Registro, Pago) */
+    div[id^="modal-"] > div {
+        padding: 20px !important;
+        width: 95% !important;
+    }
+    
+    /* 8. Ajustar el padding principal para que no lo tape el menú más alto */
+    main {
+        padding-top: 180px !important;
+    }
 }
