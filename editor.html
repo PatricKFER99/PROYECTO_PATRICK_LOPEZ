@@ -97,57 +97,56 @@
         </form>
     </div>
 
-    <script type="module">
+   <script type="module">
         import { supabase } from './conexion.js';
 
-        // Valores originales por defecto (Sonqo Café)
         const valoresPorDefecto = {
-            nombreNegocio: "Sonqo Café",
-            colorPrincipal: "#5c3a21",
-            heroTitulo: "El arte del café,<br>ahora a un clic.",
-            heroDesc: "Descubre nuestra nueva experiencia digital. Más rápida, más intuitiva, más tuya.",
-            sec1Titulo: "El lugar de tu preferencia, siempre cerca de ti",
-            sec1Desc: "Disfruta de la mejor experiencia Sonqo Café a un paso de tu casa o trabajo. Ya sea en Santa Anita o cualquier parte de Lima, tenemos un espacio diseñado especialmente para que encuentres tu momento perfecto del día.",
-            sec2Titulo: "Promociones y sabores únicos",
-            sec2Desc: "Descubre nuestras bebidas de temporada y combos exclusivos pensados en deleitar tu paladar. Cada visita es una nueva oportunidad para probar algo extraordinario y salir de la rutina.",
-            rewTitulo: "Únete a Sonqo Rewards",
-            rewDesc: "Gana puntos en cada compra, obtén bebidas gratis y disfruta de beneficios exclusivos. La fidelidad tiene un sabor increíble."
+            nombreNegocio: "Sonqo Café", colorPrincipal: "#5c3a21",
+            heroTitulo: "El arte del café,<br>ahora a un clic.", heroDesc: "Descubre nuestra nueva experiencia digital. Más rápida, más intuitiva, más tuya.",
+            sec1Titulo: "El lugar de tu preferencia, siempre cerca de ti", sec1Desc: "Disfruta de la mejor experiencia Sonqo Café a un paso de tu casa o trabajo. Ya sea en Santa Anita o cualquier parte de Lima, tenemos un espacio diseñado especialmente para que encuentres tu momento perfecto del día.",
+            sec2Titulo: "Promociones y sabores únicos", sec2Desc: "Descubre nuestras bebidas de temporada y combos exclusivos pensados en deleitar tu paladar. Cada visita es una nueva oportunidad para probar algo extraordinario y salir de la rutina.",
+            rewTitulo: "Únete a Sonqo Rewards", rewDesc: "Gana puntos en cada compra, obtén bebidas gratis y disfruta de beneficios exclusivos. La fidelidad tiene un sabor increíble."
         };
 
-        // Cargar datos actuales en el formulario al abrir
-        const guardado = JSON.parse(localStorage.getItem('disenoWebPersonalizado')) || valoresPorDefecto;
-        document.getElementById('edit-nombre').value = guardado.nombreNegocio || valoresPorDefecto.nombreNegocio;
-        document.getElementById('edit-color').value = guardado.colorPrincipal || valoresPorDefecto.colorPrincipal;
-        document.getElementById('edit-hero-titulo').value = guardado.heroTitulo || valoresPorDefecto.heroTitulo;
-        document.getElementById('edit-hero-desc').value = guardado.heroDesc || valoresPorDefecto.heroDesc;
-        document.getElementById('edit-sec1-titulo').value = guardado.sec1Titulo || valoresPorDefecto.sec1Titulo;
-        document.getElementById('edit-sec1-desc').value = guardado.sec1Desc || valoresPorDefecto.sec1Desc;
-        document.getElementById('edit-sec2-titulo').value = guardado.sec2Titulo || valoresPorDefecto.sec2Titulo;
-        document.getElementById('edit-sec2-desc').value = guardado.sec2Desc || valoresPorDefecto.sec2Desc;
-        document.getElementById('edit-rew-titulo').value = guardado.rewTitulo || valoresPorDefecto.rewTitulo;
-        document.getElementById('edit-rew-desc').value = guardado.rewDesc || valoresPorDefecto.rewDesc;
+        let configActual = {};
 
-        // Función auxiliar para subir imagen al Bucket 'fotos' de Supabase
+        // 1. Cargar datos actuales desde Supabase al abrir el editor
+        async function cargarDatos() {
+            const { data } = await supabase.from('t_configuracion').select('configuracion').eq('id', 1).single();
+            const guardado = (data && data.configuracion && Object.keys(data.configuracion).length > 0) ? data.configuracion : valoresPorDefecto;
+            
+            document.getElementById('edit-nombre').value = guardado.nombreNegocio || valoresPorDefecto.nombreNegocio;
+            document.getElementById('edit-color').value = guardado.colorPrincipal || valoresPorDefecto.colorPrincipal;
+            document.getElementById('edit-hero-titulo').value = guardado.heroTitulo || valoresPorDefecto.heroTitulo;
+            document.getElementById('edit-hero-desc').value = guardado.heroDesc || valoresPorDefecto.heroDesc;
+            document.getElementById('edit-sec1-titulo').value = guardado.sec1Titulo || valoresPorDefecto.sec1Titulo;
+            document.getElementById('edit-sec1-desc').value = guardado.sec1Desc || valoresPorDefecto.sec1Desc;
+            document.getElementById('edit-sec2-titulo').value = guardado.sec2Titulo || valoresPorDefecto.sec2Titulo;
+            document.getElementById('edit-sec2-desc').value = guardado.sec2Desc || valoresPorDefecto.sec2Desc;
+            document.getElementById('edit-rew-titulo').value = guardado.rewTitulo || valoresPorDefecto.rewTitulo;
+            document.getElementById('edit-rew-desc').value = guardado.rewDesc || valoresPorDefecto.rewDesc;
+            return guardado;
+        }
+        
+        cargarDatos().then(res => configActual = res);
+
         async function subirImagenSiExiste(idInput, urlActual) {
             const archivo = document.getElementById(idInput).files[0];
             if (!archivo) return urlActual || '';
             const nombreUnico = "web_" + Date.now() + "_" + archivo.name.replace(/\s+/g, '-');
-            const { error } = await supabase.storage.from('fotos').upload(nombreUnico, archivo);
-            if (error) throw error;
+            await supabase.storage.from('fotos').upload(nombreUnico, archivo);
             const { data } = supabase.storage.from('fotos').getPublicUrl(nombreUnico);
             return data.publicUrl;
         }
 
-        // Guardar cambios
+        // 2. Botón Guardar -> Enviar a Supabase
         document.getElementById('form-editor').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-guardar-diseno');
-            btn.innerText = "Subiendo imágenes y aplicando cambios...";
+            btn.innerText = "Guardando en la Nube...";
             btn.disabled = true;
 
             try {
-                const actual = JSON.parse(localStorage.getItem('disenoWebPersonalizado')) || {};
-
                 const nuevaConfig = {
                     nombreNegocio: document.getElementById('edit-nombre').value,
                     colorPrincipal: document.getElementById('edit-color').value,
@@ -159,29 +158,29 @@
                     sec2Desc: document.getElementById('edit-sec2-desc').value,
                     rewTitulo: document.getElementById('edit-rew-titulo').value,
                     rewDesc: document.getElementById('edit-rew-desc').value,
-                    logoUrl: await subirImagenSiExiste('file-logo', actual.logoUrl),
-                    heroImgUrl: await subirImagenSiExiste('file-hero', actual.heroImgUrl),
-                    sec1ImgUrl: await subirImagenSiExiste('file-sec1', actual.sec1ImgUrl),
-                    sec2ImgUrl: await subirImagenSiExiste('file-sec2', actual.sec2ImgUrl),
-                    rewImgUrl: await subirImagenSiExiste('file-rew', actual.rewImgUrl)
+                    logoUrl: await subirImagenSiExiste('file-logo', configActual.logoUrl),
+                    heroImgUrl: await subirImagenSiExiste('file-hero', configActual.heroImgUrl),
+                    sec1ImgUrl: await subirImagenSiExiste('file-sec1', configActual.sec1ImgUrl),
+                    sec2ImgUrl: await subirImagenSiExiste('file-sec2', configActual.sec2ImgUrl),
+                    rewImgUrl: await subirImagenSiExiste('file-rew', configActual.rewImgUrl)
                 };
 
-                localStorage.setItem('disenoWebPersonalizado', JSON.stringify(nuevaConfig));
-                alert("✅ ¡Página web actualizada! Ahora puedes ir a 'Ver Tienda en Vivo' para mostrar el nuevo diseño.");
+                await supabase.from('t_configuracion').update({ configuracion: nuevaConfig }).eq('id', 1);
+                configActual = nuevaConfig;
+                alert("✅ ¡ÉXITO! La web se actualizó para todos los celulares y computadoras del mundo.");
             } catch (err) {
-                console.error(err);
-                alert("Error al subir imagen: " + err.message);
+                alert("Error al guardar: " + err.message);
             } finally {
                 btn.innerText = "💾 Guardar y Aplicar en toda la Web";
                 btn.disabled = false;
             }
         });
 
-        // Restaurar Sonqo Café en 1 clic
-        window.restaurarOriginal = () => {
-            if (confirm("¿Deseas restaurar todos los colores, textos e imágenes originales de Sonqo Café?")) {
-                localStorage.removeItem('disenoWebPersonalizado');
-                alert("🔄 ¡Diseño original de Sonqo Café restaurado!");
+        // 3. Botón Restaurar -> Borrar Supabase
+        window.restaurarOriginal = async () => {
+            if (confirm("¿Estás seguro de restaurar el diseño original de Sonqo Café para todos los usuarios?")) {
+                await supabase.from('t_configuracion').update({ configuracion: {} }).eq('id', 1);
+                alert("🔄 ¡Diseño original restaurado!");
                 location.reload();
             }
         };

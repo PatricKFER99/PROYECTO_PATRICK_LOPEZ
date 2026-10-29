@@ -423,69 +423,56 @@ window.enviarContacto = async function(event) {
 }
 
 // ==========================================
-// FUNCIÓN 8: APLICAR CAMBIOS DESDE EDITOR.HTML
+// FUNCIÓN 8: APLICAR CAMBIOS DESDE SUPABASE (NUBE)
 // ==========================================
-function aplicarDisenoPersonalizado() {
-    const diseno = JSON.parse(localStorage.getItem('disenoWebPersonalizado'));
-    if (!diseno) return; // Si no hay cambios, conserva 100% Sonqo Café
+async function aplicarDisenoPersonalizado() {
+    try {
+        const { data, error } = await supabase.from('t_configuracion').select('configuracion').eq('id', 1).single();
+        if (error || !data || Object.keys(data.configuracion).length === 0) return null; // Conserva Sonqo Café original
 
-    // 1. Cambiar el color principal en toda la web
-    if (diseno.colorPrincipal) {
-        document.documentElement.style.setProperty('--marron-sonqo', diseno.colorPrincipal);
-    }
+        const diseno = data.configuracion;
 
-    // 2. Cambiar el logo en todas las páginas si se subió uno nuevo
-    if (diseno.logoUrl) {
-        document.querySelectorAll('.logo').forEach(img => img.src = diseno.logoUrl);
-    }
+        if (diseno.colorPrincipal) document.documentElement.style.setProperty('--marron-sonqo', diseno.colorPrincipal);
+        if (diseno.logoUrl) document.querySelectorAll('.logo').forEach(img => img.src = diseno.logoUrl);
+        if (diseno.nombreNegocio) document.title = `${diseno.nombreNegocio} | Tienda Oficial`;
 
-    // 3. Cambiar título de la pestaña y textos/imágenes del index.html
-    if (diseno.nombreNegocio) {
-        document.title = `${diseno.nombreNegocio} | Tienda Oficial`;
-    }
+        const asignarTexto = (id, texto) => { const el = document.getElementById(id); if (el && texto) el.innerHTML = texto; };
+        const asignarImg = (id, url) => { const el = document.getElementById(id); if (el && url) el.src = url; };
 
-    const asignarTexto = (id, texto) => {
-        const el = document.getElementById(id);
-        if (el && texto) el.innerHTML = texto;
-    };
-    const asignarImg = (id, url) => {
-        const el = document.getElementById(id);
-        if (el && url) el.src = url;
-    };
+        asignarTexto('web-hero-titulo', diseno.heroTitulo);
+        asignarTexto('web-hero-desc', diseno.heroDesc);
+        asignarTexto('web-sec1-titulo', diseno.sec1Titulo);
+        asignarTexto('web-sec1-desc', diseno.sec1Desc);
+        asignarTexto('web-sec2-titulo', diseno.sec2Titulo);
+        asignarTexto('web-sec2-desc', diseno.sec2Desc);
+        asignarTexto('web-rew-titulo', diseno.rewTitulo);
+        asignarTexto('web-rew-desc', diseno.rewDesc);
 
-    asignarTexto('web-hero-titulo', diseno.heroTitulo);
-    asignarTexto('web-hero-desc', diseno.heroDesc);
-    asignarTexto('web-sec1-titulo', diseno.sec1Titulo);
-    asignarTexto('web-sec1-desc', diseno.sec1Desc);
-    asignarTexto('web-sec2-titulo', diseno.sec2Titulo);
-    asignarTexto('web-sec2-desc', diseno.sec2Desc);
-    asignarTexto('web-rew-titulo', diseno.rewTitulo);
-    asignarTexto('web-rew-desc', diseno.rewDesc);
+        asignarImg('web-sec1-img', diseno.sec1ImgUrl);
+        asignarImg('web-sec2-img', diseno.sec2ImgUrl);
+        asignarImg('web-rew-img', diseno.rewImgUrl);
 
-    asignarImg('web-sec1-img', diseno.sec1ImgUrl);
-    asignarImg('web-sec2-img', diseno.sec2ImgUrl);
-    asignarImg('web-rew-img', diseno.rewImgUrl);
+        const hero = document.getElementById('web-hero');
+        if (hero && diseno.heroImgUrl) hero.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url('${diseno.heroImgUrl}')`;
 
-    const hero = document.getElementById('web-hero');
-    if (hero && diseno.heroImgUrl) {
-        hero.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url('${diseno.heroImgUrl}')`;
+        return diseno.nombreNegocio;
+    } catch (err) {
+        console.error("Error cargando diseño:", err);
+        return null;
     }
 }
 
 // ==========================================
 // INICIALIZACIÓN (AQUÍ CARGA TODO AL ABRIR LA PÁGINA)
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    aplicarDisenoPersonalizado(); // <-- Aplica los cambios de editor.html si existen
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Espera a que Supabase traiga los colores antes de cargar lo demás
+    const nombrePersonalizado = await aplicarDisenoPersonalizado(); 
+    const nombreActual = nombrePersonalizado || config.nombreNegocio;
 
-    const diseno = JSON.parse(localStorage.getItem('disenoWebPersonalizado'));
-    const nombreActual = (diseno && diseno.nombreNegocio) ? diseno.nombreNegocio : config.nombreNegocio;
-
-    // Configurar botón de WhatsApp dinámico
+    // 2. Configurar botón de WhatsApp dinámico
     const btnWsp = document.querySelector('a[href^="https://wa.me"]');
-    if (btnWsp) {
-        btnWsp.href = `https://wa.me/${config.whatsappSoporte}?text=Hola,%20necesito%20ayuda%20en%20${encodeURIComponent(nombreActual)}`;
-    }
+    if (btnWsp) btnWsp.href = `https://wa.me/${config.whatsappSoporte}?text=Hola,%20necesito%20ayuda%20en%20${encodeURIComponent(nombreActual)}`;
     
     cargarCatalogo();
     cargarPromociones(); 
