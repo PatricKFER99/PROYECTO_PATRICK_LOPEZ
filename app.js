@@ -1,7 +1,8 @@
 // ==========================================
-// 1. IMPORTAR LA CONEXIÓN A SUPABASE
+// 1. IMPORTAR LA CONEXIÓN A SUPABASE Y CONFIGURACIÓN
 // ==========================================
 import { supabase } from './conexion.js';
+import { config } from './config.js'; 
 
 // ==========================================
 // FUNCIÓN 1: CARGAR EL CATÁLOGO (DINÁMICO CON IMÁGENES)
@@ -10,7 +11,7 @@ async function cargarCatalogo() {
     const contenedor = document.getElementById('catalogo-container');
     if (!contenedor) return; 
 
-    const catalogoGuardado = sessionStorage.getItem('catalogoStarbucksV5');
+    const catalogoGuardado = sessionStorage.getItem('catalogoSistemaV1');
     if (catalogoGuardado) {
         renderizarTarjetas(JSON.parse(catalogoGuardado), contenedor);
         return; 
@@ -33,7 +34,7 @@ async function cargarCatalogo() {
 
         if (error) throw error;
         
-        sessionStorage.setItem('catalogoStarbucksV5', JSON.stringify(productos));
+        sessionStorage.setItem('catalogoSistemaV1', JSON.stringify(productos));
         renderizarTarjetas(productos, contenedor);
         
     } catch (error) {
@@ -124,7 +125,7 @@ async function registrarCliente(event) {
             
         if (error) throw error;
         const nuevoCliente = data[0]; 
-        localStorage.setItem('usuarioStarbucks', JSON.stringify({ id_cliente: nuevoCliente.id_cliente, nombre: nombre, ruc: ruc, correo: correo }));
+        localStorage.setItem('usuarioSistema', JSON.stringify({ id_cliente: nuevoCliente.id_cliente, nombre: nombre, ruc: ruc, correo: correo }));
         actualizarHeader(); 
         alert('¡Cuenta creada exitosamente!');
         document.getElementById('modal-registro').style.display = 'none';
@@ -140,13 +141,13 @@ async function registrarCliente(event) {
 // ==========================================
 function actualizarHeader() {
     const contenedorUsuario = document.getElementById('menu-usuario');
-    const usuarioGuardado = JSON.parse(localStorage.getItem('usuarioStarbucks'));
+    const usuarioGuardado = JSON.parse(localStorage.getItem('usuarioSistema'));
 
     if (usuarioGuardado && contenedorUsuario) {
         const primerNombre = usuarioGuardado.nombre.split(' ')[0];
         
         let botonAdmin = '';
-        if (usuarioGuardado.correo === '61012190@iestpasm.edu.pe') {
+        if (usuarioGuardado.correo === config.correoAdmin) {
             botonAdmin = `<button onclick="window.location.href='admin.html'" style="background: #e6b800; color: #333; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-right: 10px;">⚙️ Panel Admin</button>`;
         }
 
@@ -160,8 +161,8 @@ function actualizarHeader() {
 }
 
 window.cerrarSesion = function() {
-    localStorage.removeItem('usuarioStarbucks'); 
-    localStorage.removeItem('carritoStarbucks'); 
+    localStorage.removeItem('usuarioSistema'); 
+    localStorage.removeItem('carritoSistema'); 
     location.reload(); 
 }
 
@@ -175,7 +176,7 @@ async function iniciarSesion(event) {
         if (error) throw error;
         
         if (cliente) {
-            localStorage.setItem('usuarioStarbucks', JSON.stringify({ id_cliente: cliente.id_cliente, nombre: cliente.nombre_completo, ruc: cliente.ruc, correo: cliente.correo }));
+            localStorage.setItem('usuarioSistema', JSON.stringify({ id_cliente: cliente.id_cliente, nombre: cliente.nombre_completo, ruc: cliente.ruc, correo: cliente.correo }));
             actualizarHeader(); 
             const primerNombre = cliente.nombre_completo.split(' ')[0];
             alert(`¡Qué bueno verte de nuevo, ${primerNombre}!`);
@@ -192,7 +193,7 @@ async function iniciarSesion(event) {
 // FUNCIÓN 5: CARRITO
 // ==========================================
 window.agregarAlCarrito = function(idProducto, nombreProducto, precio) {
-    const usuarioGuardado = JSON.parse(localStorage.getItem('usuarioStarbucks'));
+    const usuarioGuardado = JSON.parse(localStorage.getItem('usuarioSistema'));
     if (!usuarioGuardado) {
         alert(`Por favor inicia sesión para pedir: ${nombreProducto}.`);
         const modalLogin = document.getElementById('modal-login');
@@ -200,12 +201,12 @@ window.agregarAlCarrito = function(idProducto, nombreProducto, precio) {
         return; 
     }
 
-    let carrito = JSON.parse(localStorage.getItem('carritoStarbucks')) || [];
+    let carrito = JSON.parse(localStorage.getItem('carritoSistema')) || [];
     const indice = carrito.findIndex(item => item.id_producto === idProducto);
     if(indice !== -1) carrito[indice].cantidad += 1;
     else carrito.push({ id_producto: idProducto, nombre: nombreProducto, precio: precio, cantidad: 1 });
 
-    localStorage.setItem('carritoStarbucks', JSON.stringify(carrito));
+    localStorage.setItem('carritoSistema', JSON.stringify(carrito));
     renderizarCarrito(); 
     abrirCarrito(); 
 }
@@ -216,7 +217,7 @@ window.renderizarCarrito = function() {
     
     if (!contenedor || !totalElemento) return;
 
-    const carrito = JSON.parse(localStorage.getItem('carritoStarbucks')) || [];
+    const carrito = JSON.parse(localStorage.getItem('carritoSistema')) || [];
     contenedor.innerHTML = '';
     let total = 0;
 
@@ -237,9 +238,9 @@ window.renderizarCarrito = function() {
 }
 
 window.eliminarDelCarrito = function(index) {
-    let carrito = JSON.parse(localStorage.getItem('carritoStarbucks')) || [];
+    let carrito = JSON.parse(localStorage.getItem('carritoSistema')) || [];
     carrito.splice(index, 1);
-    localStorage.setItem('carritoStarbucks', JSON.stringify(carrito));
+    localStorage.setItem('carritoSistema', JSON.stringify(carrito));
     renderizarCarrito();
 }
 
@@ -268,7 +269,7 @@ window.cerrarCarrito = function() {
 // FUNCIÓN 6: CARGAR DISTRITOS Y ABRIR PAGO
 // ==========================================
 window.procesarCompra = async function() {
-    const carrito = JSON.parse(localStorage.getItem('carritoStarbucks')) || [];
+    const carrito = JSON.parse(localStorage.getItem('carritoSistema')) || [];
     if (carrito.length === 0) {
         alert("Agrega al menos un producto para confirmar tu pedido.");
         return;
@@ -302,8 +303,8 @@ window.procesarCompra = async function() {
 // FUNCIÓN 7: FINALIZAR PEDIDO
 // ==========================================
 window.finalizarPedido = async function(metodoPago) {
-    const carrito = JSON.parse(localStorage.getItem('carritoStarbucks')) || [];
-    const usuario = JSON.parse(localStorage.getItem('usuarioStarbucks'));
+    const carrito = JSON.parse(localStorage.getItem('carritoSistema')) || [];
+    const usuario = JSON.parse(localStorage.getItem('usuarioSistema'));
     const selectDistrito = document.getElementById('select-distrito');
     const inputDireccion = document.getElementById('input-direccion');
     
@@ -382,7 +383,7 @@ window.finalizarPedido = async function(metodoPago) {
         const modalPago = document.getElementById('modal-pago');
         if(modalPago) modalPago.style.display = 'none';
         
-        localStorage.removeItem('carritoStarbucks');
+        localStorage.removeItem('carritoSistema');
         renderizarCarrito();
         cerrarCarrito();
 
@@ -425,8 +426,14 @@ window.enviarContacto = async function(event) {
 // INICIALIZACIÓN (AQUÍ CARGA TODO AL ABRIR LA PÁGINA)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Configurar botón de WhatsApp dinámico
+    const btnWsp = document.querySelector('a[href^="https://wa.me"]');
+    if (btnWsp) {
+        btnWsp.href = `https://wa.me/${config.whatsappSoporte}?text=Hola,%20necesito%20ayuda%20en%20${encodeURIComponent(config.nombreNegocio)}`;
+    }
+    
     cargarCatalogo();
-    cargarPromociones(); // <-- Inyecta la categoría 4 en promociones.html
+    cargarPromociones(); 
     actualizarHeader(); 
     
     const formRegistro = document.getElementById('form-registro');
