@@ -8,9 +8,12 @@
 </head>
 <body style="background-color: var(--crema, #f9f5f0); font-family: 'Open Sans', sans-serif; padding: 40px;">
     
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-        <h1 style="color: var(--marron-sonqo, #5c3a21); font-family: 'Montserrat', sans-serif;">Gestión de Inventario (Administrador)</h1>
-        <a href="index.html" class="btn-primary" style="text-decoration: none; width: auto; background-color: var(--marron-sonqo, #5c3a21); color: white; padding: 12px 25px; border-radius: 25px; font-weight: bold; font-family: 'Montserrat', sans-serif;">Volver a la tienda</a>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+        <h1 style="color: var(--marron-sonqo, #5c3a21); font-family: 'Montserrat', sans-serif; margin: 0;">Gestión de Inventario (Administrador)</h1>
+        <div style="display: flex; gap: 12px;">
+            <a href="editor.html" style="text-decoration: none; background-color: #e6b800; color: #222; padding: 12px 22px; border-radius: 25px; font-weight: bold; font-family: 'Montserrat', sans-serif; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">🎨 Personalizar Página Web</a>
+            <a href="index.html" class="btn-primary" style="text-decoration: none; width: auto; background-color: var(--marron-sonqo, #5c3a21); color: white; padding: 12px 25px; border-radius: 25px; font-weight: bold; font-family: 'Montserrat', sans-serif;">Volver a la tienda</a>
+        </div>
     </div>
     
     <div style="display: flex; gap: 30px; flex-wrap: wrap;">
@@ -64,7 +67,6 @@
     <script type="module">
         import { supabase } from './conexion.js';
 
-        // 1. LEER: Cargar el inventario
         async function cargarInventario() {
             const { data, error } = await supabase.from('t_producto').select('*').order('id_producto', { ascending: true });
             const tbody = document.getElementById('tabla-productos');
@@ -77,7 +79,7 @@
             tbody.innerHTML = '';
             data.forEach(prod => {
                 const id = prod.id_producto || prod.id;
-                const img = prod.imagen || 'americano-alto-cafe1.jpg'; // Miniatura por defecto
+                const img = prod.imagen || 'americano-alto-cafe1.jpg';
                 
                 tbody.innerHTML += `
                     <tr style="border-bottom: 1px solid #eee;">
@@ -94,10 +96,8 @@
             });
         }
 
-        // 2. CREAR / ACTUALIZAR: Subir foto y guardar producto
         document.getElementById('form-producto').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const btnGuardar = document.getElementById('btn-guardar');
             btnGuardar.innerText = "Subiendo imagen y guardando...";
             btnGuardar.disabled = true;
@@ -105,19 +105,13 @@
             const id = document.getElementById('prod-id').value;
             const inputArchivo = document.getElementById('prod-img');
             const archivo = inputArchivo.files[0];
-            
-            // Mantener la URL anterior si estamos editando y no subimos una foto nueva
             let urlFinal = inputArchivo.dataset.urlAnterior || '';
 
             try {
-                // Si el usuario seleccionó una imagen nueva, la subimos al Bucket
                 if (archivo) {
                     const nombreUnico = Date.now() + "_" + archivo.name.replace(/\s+/g, '-');
-                    const { data: uploadData, error: uploadError } = await supabase.storage.from('fotos').upload(nombreUnico, archivo);
-                    
+                    const { error: uploadError } = await supabase.storage.from('fotos').upload(nombreUnico, archivo);
                     if (uploadError) throw uploadError;
-                    
-                    // Extraemos el enlace web permanente de esa foto
                     const { data: publicUrlData } = supabase.storage.from('fotos').getPublicUrl(nombreUnico);
                     urlFinal = publicUrlData.publicUrl;
                 }
@@ -140,7 +134,7 @@
                 
                 limpiarFormulario();
                 cargarInventario();
-                sessionStorage.removeItem('catalogoStarbucksV5'); 
+                sessionStorage.removeItem('catalogoSistemaV1'); 
                 
             } catch (err) {
                 console.error(err);
@@ -151,16 +145,14 @@
             }
         });
 
-        // 3. BORRAR
         window.eliminarProd = async (id) => {
             if(confirm("¿Estás seguro de que deseas eliminar este producto del inventario?")) {
                 await supabase.from('t_producto').delete().eq('id_producto', id);
                 cargarInventario();
-                sessionStorage.removeItem('catalogoStarbucksV5'); 
+                sessionStorage.removeItem('catalogoSistemaV1'); 
             }
         }
 
-        // 4. Llenar formulario para editar
         window.editarProd = (id, nombre, desc, precio, cat, urlImg) => {
             document.getElementById('prod-id').value = id;
             document.getElementById('prod-nombre').value = nombre;
@@ -169,9 +161,8 @@
             document.getElementById('prod-cat').value = cat;
             
             const inputImg = document.getElementById('prod-img');
-            inputImg.value = ''; // Limpiamos el selector
-            inputImg.dataset.urlAnterior = urlImg; // Guardamos en memoria la imagen que ya tenía
-            
+            inputImg.value = '';
+            inputImg.dataset.urlAnterior = urlImg;
             document.getElementById('msg-img').style.display = urlImg ? 'block' : 'none';
         }
 

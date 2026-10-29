@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editor Visual Web | Administrador</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body style="background-color: var(--crema, #f9f5f0); font-family: 'Open Sans', sans-serif; padding: 40px;">
+
+    <div style="max-width: 900px; margin: 0 auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+            <h1 style="color: var(--marron-sonqo, #5c3a21); font-family: 'Montserrat', sans-serif; margin: 0;">🎨 Personalizador Visual de la Web</h1>
+            <div style="display: flex; gap: 10px;">
+                <a href="admin.html" style="text-decoration: none; background: #555; color: white; padding: 10px 20px; border-radius: 25px; font-weight: bold; font-family: 'Montserrat', sans-serif;">&larr; Volver al Inventario</a>
+                <a href="index.html" style="text-decoration: none; background: var(--marron-sonqo, #5c3a21); color: white; padding: 10px 20px; border-radius: 25px; font-weight: bold; font-family: 'Montserrat', sans-serif;">Ver Tienda en Vivo</a>
+            </div>
+        </div>
+
+        <form id="form-editor" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 25px;">
+            
+            <!-- 1. IDENTIDAD Y COLOR GLOBAL -->
+            <div style="border-bottom: 2px solid #eee; padding-bottom: 20px;">
+                <h3 style="color: var(--cafe-oscuro, #2c1d11); margin-bottom: 15px;">1. Marca y Color del Sistema</h3>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Nombre del Negocio:</label>
+                        <input type="text" id="edit-nombre" placeholder="Ej. Ferretería Juanito" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Color Principal (Cabecera y Botones):</label>
+                        <input type="color" id="edit-color" value="#5c3a21" style="width: 100%; height: 42px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <label style="font-weight: bold; display: block; margin-bottom: 5px;">Cambiar Logo (Opcional):</label>
+                    <input type="file" id="file-logo" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+            </div>
+
+            <!-- 2. PORTADA PRINCIPAL (HERO) -->
+            <div style="border-bottom: 2px solid #eee; padding-bottom: 20px;">
+                <h3 style="color: var(--cafe-oscuro, #2c1d11); margin-bottom: 15px;">2. Portada Principal (Banner Superior)</h3>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Título Principal:</label>
+                <input type="text" id="edit-hero-titulo" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;">
+                
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Subtítulo:</label>
+                <textarea id="edit-hero-desc" rows="2" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;"></textarea>
+
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Cambiar Imagen de Fondo (Opcional):</label>
+                <input type="file" id="file-hero" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+
+            <!-- 3. SECCIÓN 1 (NOSOTROS / LOCAL) -->
+            <div style="border-bottom: 2px solid #eee; padding-bottom: 20px;">
+                <h3 style="color: var(--cafe-oscuro, #2c1d11); margin-bottom: 15px;">3. Primera Sección Informativa</h3>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Título de la Sección 1:</label>
+                <input type="text" id="edit-sec1-titulo" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;">
+                
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Descripción de la Sección 1:</label>
+                <textarea id="edit-sec1-desc" rows="3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;"></textarea>
+
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Cambiar Imagen Derecha (Opcional):</label>
+                <input type="file" id="file-sec1" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+
+            <!-- 4. SECCIÓN 2 (PROMOCIONES / DESTACADOS) -->
+            <div style="border-bottom: 2px solid #eee; padding-bottom: 20px;">
+                <h3 style="color: var(--cafe-oscuro, #2c1d11); margin-bottom: 15px;">4. Segunda Sección Informativa</h3>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Título de la Sección 2:</label>
+                <input type="text" id="edit-sec2-titulo" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;">
+                
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Descripción de la Sección 2:</label>
+                <textarea id="edit-sec2-desc" rows="3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;"></textarea>
+
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Cambiar Imagen Izquierda (Opcional):</label>
+                <input type="file" id="file-sec2" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+
+            <!-- 5. BANNER INFERIOR (REWARDS / BENEFICIOS) -->
+            <div>
+                <h3 style="color: var(--cafe-oscuro, #2c1d11); margin-bottom: 15px;">5. Banner Inferior de Registro</h3>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Título del Banner:</label>
+                <input type="text" id="edit-rew-titulo" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;">
+                
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Descripción del Banner:</label>
+                <textarea id="edit-rew-desc" rows="2" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;"></textarea>
+
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Cambiar Imagen del Banner (Opcional):</label>
+                <input type="file" id="file-rew" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
+                <button type="submit" id="btn-guardar-diseno" class="btn-primary" style="flex: 2; background: #1e7a4b; color: white; padding: 15px; border: none; border-radius: 10px; font-weight: bold; font-size: 1.1rem; cursor: pointer;">💾 Guardar y Aplicar en toda la Web</button>
+                <button type="button" onclick="restaurarOriginal()" style="flex: 1; background: #d9534f; color: white; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">🔄 Restaurar Sonqo Café Original</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import { supabase } from './conexion.js';
+
+        // Valores originales por defecto (Sonqo Café)
+        const valoresPorDefecto = {
+            nombreNegocio: "Sonqo Café",
+            colorPrincipal: "#5c3a21",
+            heroTitulo: "El arte del café,<br>ahora a un clic.",
+            heroDesc: "Descubre nuestra nueva experiencia digital. Más rápida, más intuitiva, más tuya.",
+            sec1Titulo: "El lugar de tu preferencia, siempre cerca de ti",
+            sec1Desc: "Disfruta de la mejor experiencia Sonqo Café a un paso de tu casa o trabajo. Ya sea en Santa Anita o cualquier parte de Lima, tenemos un espacio diseñado especialmente para que encuentres tu momento perfecto del día.",
+            sec2Titulo: "Promociones y sabores únicos",
+            sec2Desc: "Descubre nuestras bebidas de temporada y combos exclusivos pensados en deleitar tu paladar. Cada visita es una nueva oportunidad para probar algo extraordinario y salir de la rutina.",
+            rewTitulo: "Únete a Sonqo Rewards",
+            rewDesc: "Gana puntos en cada compra, obtén bebidas gratis y disfruta de beneficios exclusivos. La fidelidad tiene un sabor increíble."
+        };
+
+        // Cargar datos actuales en el formulario al abrir
+        const guardado = JSON.parse(localStorage.getItem('disenoWebPersonalizado')) || valoresPorDefecto;
+        document.getElementById('edit-nombre').value = guardado.nombreNegocio || valoresPorDefecto.nombreNegocio;
+        document.getElementById('edit-color').value = guardado.colorPrincipal || valoresPorDefecto.colorPrincipal;
+        document.getElementById('edit-hero-titulo').value = guardado.heroTitulo || valoresPorDefecto.heroTitulo;
+        document.getElementById('edit-hero-desc').value = guardado.heroDesc || valoresPorDefecto.heroDesc;
+        document.getElementById('edit-sec1-titulo').value = guardado.sec1Titulo || valoresPorDefecto.sec1Titulo;
+        document.getElementById('edit-sec1-desc').value = guardado.sec1Desc || valoresPorDefecto.sec1Desc;
+        document.getElementById('edit-sec2-titulo').value = guardado.sec2Titulo || valoresPorDefecto.sec2Titulo;
+        document.getElementById('edit-sec2-desc').value = guardado.sec2Desc || valoresPorDefecto.sec2Desc;
+        document.getElementById('edit-rew-titulo').value = guardado.rewTitulo || valoresPorDefecto.rewTitulo;
+        document.getElementById('edit-rew-desc').value = guardado.rewDesc || valoresPorDefecto.rewDesc;
+
+        // Función auxiliar para subir imagen al Bucket 'fotos' de Supabase
+        async function subirImagenSiExiste(idInput, urlActual) {
+            const archivo = document.getElementById(idInput).files[0];
+            if (!archivo) return urlActual || '';
+            const nombreUnico = "web_" + Date.now() + "_" + archivo.name.replace(/\s+/g, '-');
+            const { error } = await supabase.storage.from('fotos').upload(nombreUnico, archivo);
+            if (error) throw error;
+            const { data } = supabase.storage.from('fotos').getPublicUrl(nombreUnico);
+            return data.publicUrl;
+        }
+
+        // Guardar cambios
+        document.getElementById('form-editor').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-guardar-diseno');
+            btn.innerText = "Subiendo imágenes y aplicando cambios...";
+            btn.disabled = true;
+
+            try {
+                const actual = JSON.parse(localStorage.getItem('disenoWebPersonalizado')) || {};
+
+                const nuevaConfig = {
+                    nombreNegocio: document.getElementById('edit-nombre').value,
+                    colorPrincipal: document.getElementById('edit-color').value,
+                    heroTitulo: document.getElementById('edit-hero-titulo').value,
+                    heroDesc: document.getElementById('edit-hero-desc').value,
+                    sec1Titulo: document.getElementById('edit-sec1-titulo').value,
+                    sec1Desc: document.getElementById('edit-sec1-desc').value,
+                    sec2Titulo: document.getElementById('edit-sec2-titulo').value,
+                    sec2Desc: document.getElementById('edit-sec2-desc').value,
+                    rewTitulo: document.getElementById('edit-rew-titulo').value,
+                    rewDesc: document.getElementById('edit-rew-desc').value,
+                    logoUrl: await subirImagenSiExiste('file-logo', actual.logoUrl),
+                    heroImgUrl: await subirImagenSiExiste('file-hero', actual.heroImgUrl),
+                    sec1ImgUrl: await subirImagenSiExiste('file-sec1', actual.sec1ImgUrl),
+                    sec2ImgUrl: await subirImagenSiExiste('file-sec2', actual.sec2ImgUrl),
+                    rewImgUrl: await subirImagenSiExiste('file-rew', actual.rewImgUrl)
+                };
+
+                localStorage.setItem('disenoWebPersonalizado', JSON.stringify(nuevaConfig));
+                alert("✅ ¡Página web actualizada! Ahora puedes ir a 'Ver Tienda en Vivo' para mostrar el nuevo diseño.");
+            } catch (err) {
+                console.error(err);
+                alert("Error al subir imagen: " + err.message);
+            } finally {
+                btn.innerText = "💾 Guardar y Aplicar en toda la Web";
+                btn.disabled = false;
+            }
+        });
+
+        // Restaurar Sonqo Café en 1 clic
+        window.restaurarOriginal = () => {
+            if (confirm("¿Deseas restaurar todos los colores, textos e imágenes originales de Sonqo Café?")) {
+                localStorage.removeItem('disenoWebPersonalizado');
+                alert("🔄 ¡Diseño original de Sonqo Café restaurado!");
+                location.reload();
+            }
+        };
+    </script>
+</body>
+</html>
